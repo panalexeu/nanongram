@@ -1,5 +1,5 @@
 """
-preprocessing and tokenizing
+preprocessing
 """
 import os 
 import json 
@@ -37,7 +37,6 @@ class TgPreporcStrategy(BasePreprocStrategy):
         with open(path, 'r') as f:
             self.cnv = json.load(f)
         self.target = id_
-        self.lower = True
 
     def __call__(self):
         msgs = [] 
@@ -45,8 +44,6 @@ class TgPreporcStrategy(BasePreprocStrategy):
             
             if msg.get('from_id') == self.target and isinstance(msg.get('text'), str):
                 text = msg['text']
-                if self.lower:
-                    text = text.lower() 
 
                 # empty str check 
                 if text.strip():
