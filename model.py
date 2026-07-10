@@ -1,5 +1,6 @@
 # TODO implement radix tree ds here, 
-# for now it is biased to bigram 
+# for now it is biased to bigram or fuck it 
+# refac this class 
 import random  
 import pickle
 from pathlib import Path 
@@ -10,9 +11,8 @@ from preproc import START_SEQ, END_SEQ
 class Model: 
     def __init__(
         self, 
-        ngram: int, 
-        tokenizer: BaseTokenizer, 
-        data_path: Path, 
+        ngram: int | None, 
+        tokenizer: BaseTokenizer | None, 
         export_count_path: Path = Path('out_count.pkl'), 
         export_prob_path: Path = Path('out_prob.pkl'), 
     ): 
@@ -20,7 +20,6 @@ class Model:
         if not (2 >= self.ngram >= 1): 
             raise ValueError('Only 1 - unigram and 2 - bigrams are supported')
         self.tokenizer = tokenizer 
-        self.data_path = data_path 
         self.export_count_path = export_count_path
         self.export_prob_path = export_prob_path
         self.count_dict = dict() 
@@ -77,7 +76,7 @@ class Model:
 
     def load_prob_dict(self): 
         with open(self.export_prob_path, 'rb') as f: 
-            self.prob_dict_dict = pickle.load(f)
+            self.prob_dict = pickle.load(f)
 
     def count_prob(self): 
         self.empty_count_dict_check()
@@ -113,30 +112,3 @@ class Model:
         
         return sampled
     
-    def __call__(self):
-        texts = self.load_raw(self.data_path)
-        tokens = self.tokenizer(texts)
-        
-        self.count(tokens)
-        self.export_count_dict()
-
-        self.count_prob()
-        self.export_prob_dict()
-
-        sampled = self.sample(token=None)
-        print(sampled)
-        sampled = self.sample(token=None)
-        print(sampled)
-        sampled = self.sample(token=None)
-        print(sampled)
-    
-if __name__ == '__main__': 
-    tokenizer = BaseTokenizer() 
-    model = Model(
-        ngram=2,
-        tokenizer=tokenizer,
-        data_path=Path('./out.txt')
-    )
-    model()
-    
-
