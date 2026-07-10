@@ -8,7 +8,7 @@ class BaseTokenizer:
     """
     def __init__(self):
         self.exp = rf"{START_SEQ}| ?{END_SEQ}|'s|'t|'re|'ve|'m|'ll|'d| ?\w+| ?[^\s\w]+|\s+(?!\S)|\s+" 
-                     # special tokens        # clitics               # a-n #  non a-n # punct   # whitespace
+                     # special tokens        # clitics               # a-n # non a-n 
         self.pat = re.compile(self.exp)
 
     def __call__(self, text: str, lower: bool = True) -> list[str]: 
