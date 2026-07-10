@@ -21,18 +21,22 @@ class Model:
             raise ValueError('Only 1 - unigram and 2 - bigrams are supported')
         self.tokenizer = tokenizer 
         self.export_count_path = export_count_path
-        self.export_prob_path = export_prob_path
+        self.export_prob_path = export_prob_path 
         self.count_dict = dict() 
         self.prob_dict = dict()
+        self.raw = None
+        self.tokens = []
 
-    @staticmethod
-    def load_raw(path: Path) -> list[str]: 
+    def load_raw(self, path: Path) -> list[str]: 
         with open(path, 'r') as f: 
-            return f.read()
+            self.raw = f.read()
     
-    def count(self, tokens: list[str]): 
-        for i in range(0, len(tokens)): 
-            token = tokens[i].strip()
+    def tokenize(self): 
+        self.tokens = self.tokenizer.__call__(text=self.raw, lower=True)
+
+    def count(self): 
+        for i in range(0, len(self.tokens)): 
+            token = self.tokens[i].strip()
 
             if token == END_SEQ or token == '\n': 
                 continue 
@@ -40,7 +44,7 @@ class Model:
             # form key, which is ngram tuple 
             key_ = [] 
             for j in range(0, self.ngram):
-                key_.append(tokens[i+j])
+                key_.append(self.tokens[i+j])
             key_ = tuple(key_)
 
             try:
@@ -95,6 +99,7 @@ class Model:
             prefix = key_[:-1]
             self.prob_dict[key_] = ngram_count / prefix_counts[prefix]             
 
+    # TODO handle out of range tokens 
     def sample(self, token: str | None) -> list[str]: 
         """unifrmly sample until END_SEQ token, start from START_SEQ token"""
         self.empty_prob_dict_check()
