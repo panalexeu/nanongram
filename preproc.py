@@ -47,6 +47,7 @@ class TgPreporcStrategy(BasePreprocStrategy):
 
                 # empty str check 
                 if text.strip():
+                    text = text.replace('\n', ' ') # TODO think what to do with newlines
                     msgs.append(text)
 
         return msgs 
