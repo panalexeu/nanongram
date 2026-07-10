@@ -4,6 +4,8 @@ import random
 import pickle
 from pathlib import Path 
 
+from tqdm import tqdm 
+
 from tokenizer import BaseTokenizer
 from preproc import START_SEQ, END_SEQ
 
@@ -83,15 +85,18 @@ class Model:
         self.empty_count_dict_check()
 
         keys_ = self.count_dict.keys()
-        for key_ in keys_: 
-            ngram_count = self.count_dict[key_]
-            prefix_count = 0
+        
+        # count prefixex 
+        prefix_counts = dict() 
+        for key_ in keys_:
             prefix = key_[:-1]
+            prefix_counts[prefix] = prefix_counts.get(prefix, 0) + 1 
 
-            for pkey in keys_:
-                if pkey[:-1] == prefix: prefix_count += 1 
-
-            self.prob_dict[key_] = ngram_count / prefix_count             
+        # calc prob by dividing count_dict[ngram] / prefix_counts[ngram-1]
+        for key_ in tqdm(keys_): 
+            ngram_count = self.count_dict[key_]
+            prefix = key_[:-1]
+            self.prob_dict[key_] = ngram_count / prefix_counts[prefix]             
 
     def sample(self, token: str | None) -> list[str]: 
         """unifrmly sample until END_SEQ token, start from START_SEQ token"""
