@@ -7,7 +7,7 @@ from typing import Self
 from pathlib import Path 
 
 from tokenizer import BaseTokenizer
-from preproc import START_SEQ, END_SEQ
+from preproc import END_SEQ
 
 class Model: 
     def __init__(
@@ -18,8 +18,8 @@ class Model:
         export_prob_path: Path | None = Path('out_prob.pkl'), 
     ): 
         self.ngram = ngram 
-        if self.ngram and not self.ngram >= 1: 
-            raise ValueError('at least unigram should be provided (ngram=1)')
+        if self.ngram and not self.ngram > 1: 
+            raise ValueError('at least bigram should be provided (ngram=2)')
         self.tokenizer = tokenizer 
         self.export_count_path = export_count_path
         self.export_prob_path = export_prob_path 
@@ -51,7 +51,8 @@ class Model:
             # form key, which is ngram tuple 
             key_ = [] 
             for j in range(0, self.ngram):                 
-                if (i+j) > len(self.tokens) - 1: break 
+                if (i+j) > len(self.tokens) - 1: break  # out of range  
+                if self.tokens[i+j] == '\n': break  # ngram moves to next text 
                 token = self.tokens[i+j]
                 key_.append(token)
             key_ = tuple(key_)
@@ -108,23 +109,24 @@ class Model:
             prefix = key_[:-1]
             self.prob_dict[key_] = ngram_count / prefix_counts[prefix]             
 
-    def sample(self, token: str | None) -> list[str]: 
-        """unifrmly sample until END_SEQ token, start from START_SEQ token or provided token"""
+    def sample(self, tokens: list[str]) -> list[str]: 
+        """unifrmly sample until END_SEQ token"""
         self.empty_prob_dict_check()
+        ngram = len(next(iter(self.prob_dict))) # next(iter(...)) to not cnvrt keys view into list 
+        assert len(tokens) == ngram-1 
 
-        token = START_SEQ if not token else token 
         keys_ = self.prob_dict.keys()
-        sampled = [token]
-        while token.strip() != END_SEQ: 
-            ngrams = [key_ for key_ in keys_ if key_[0] == token]
+        sampled = tokens
+        while tokens[-1].strip() != END_SEQ: 
+            ngrams = [key_ for key_ in keys_ if ''.join(key_[:ngram-1]) == ''.join(tokens)]
             if len(ngrams) == 0:  # token was not found in prob_dict
                 return []
             probs = [self.prob_dict[ngram] for ngram in ngrams]
             # uniformly sample here from distr 
             sample = random.choices(population=ngrams, weights=probs, k=1)[0]
-            token = sample[-1]
-            sampled.append(token)
-        
+            tokens = sample[1:]
+            sampled.append(sample[-1])
+
         return sampled
     
     @classmethod

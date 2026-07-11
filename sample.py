@@ -11,10 +11,7 @@ if __name__ == "__main__":
     model = Model.from_pretrained(export_count_path=None, export_prob_path=args.prob_path)
 
     # sampling  
-    token = None
     while True: 
-        if token:
-            token = ' ' + token.strip().lower()
-        sampled = model.sample(token) 
+        sampled = model.sample(tokens=['<s>']) 
         print(''.join(sampled))
-        token = input('Enter: ')
+        input('Enter: ')

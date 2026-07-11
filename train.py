@@ -12,7 +12,7 @@ if __name__ == '__main__':
     parser.add_argument("cnv_path", type=str) 
     parser.add_argument("--preproc_export_path", type=str, default='./out.txt')
     # model training arg s
-    parser.add_argument("--ngram", type=int, default=2)  # TODO change to 1 defautl here, once unigram sampling is supported 
+    parser.add_argument("--ngram", type=int, default=2) 
     parser.add_argument("--export_count_path", type=str, default=None)
     parser.add_argument("--export_prob_path", type=str, default='./outprob.pkl')
     parser.add_argument
