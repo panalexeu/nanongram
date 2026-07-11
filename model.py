@@ -7,7 +7,7 @@ from typing import Self
 from pathlib import Path 
 
 from tokenizer import BaseTokenizer
-from preproc import END_SEQ
+from preproc import END_SEQ, START_SEQ
 
 class Model: 
     def __init__(
@@ -43,9 +43,8 @@ class Model:
             raise IOError('tokens list is empty, use tokenize() method')
 
         for i in range(0, len(self.tokens)): 
-            token = self.tokens[i].strip()
-
-            if token == END_SEQ or token == '\n': 
+            token = self.tokens[i]
+            if token.strip() == END_SEQ or token == '\n': 
                 continue 
             
             # form key, which is ngram tuple 
@@ -63,7 +62,7 @@ class Model:
                 self.count_dict[key_] = 1 
             else: 
                 self.count_dict[key_] = count + 1 
-    
+        
     def empty_count_dict_check(self): 
         if len(self.count_dict.keys()) == 0:
             raise IOError('count_dict is empty')
@@ -109,11 +108,18 @@ class Model:
             prefix = key_[:-1]
             self.prob_dict[key_] = ngram_count / prefix_counts[prefix]             
 
-    def sample(self, tokens: list[str]) -> list[str]: 
+    def sample(self, tokens: list[str] = None, stream: bool = False) -> list[str]: 
         """unifrmly sample until END_SEQ token"""
         self.empty_prob_dict_check()
         ngram = len(next(iter(self.prob_dict))) # next(iter(...)) to not cnvrt keys view into list 
-        assert len(tokens) == ngram-1 
+
+        if tokens is None:   
+            if ngram == 2:
+                tokens = [START_SEQ]
+            else: 
+                tokens = list(self.sample_start_token()[:-1])
+        else: 
+            assert len(tokens) == ngram-1 
 
         keys_ = self.prob_dict.keys()
         sampled = tokens
@@ -124,11 +130,21 @@ class Model:
             probs = [self.prob_dict[ngram] for ngram in ngrams]
             # uniformly sample here from distr 
             sample = random.choices(population=ngrams, weights=probs, k=1)[0]
+            sampled_token = sample[-1]
+            sampled.append(sampled_token)
+            
             tokens = sample[1:]
-            sampled.append(sample[-1])
+
+            if stream: 
+                print(sampled_token, flush=True, end="")
 
         return sampled
     
+    def sample_start_token(self):
+        keys_ = self.prob_dict.keys()
+        start_tokens = [key_ for key_ in keys_ if key_[0] == START_SEQ]
+        return random.choice(start_tokens)
+
     @classmethod
     def from_pretrained(
         cls, 

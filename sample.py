@@ -12,6 +12,5 @@ if __name__ == "__main__":
 
     # sampling  
     while True: 
-        sampled = model.sample(tokens=['<s>']) 
-        print(''.join(sampled))
-        input('Enter: ')
+        sampled = model.sample(tokens=None, stream=True) 
+        input('\nEnter: ')
