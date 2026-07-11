@@ -18,8 +18,8 @@ class Model:
         export_prob_path: Path | None = Path('out_prob.pkl'), 
     ): 
         self.ngram = ngram 
-        if self.ngram and not (2 >= self.ngram >= 1): 
-            raise ValueError('Only 1 - unigram and 2 - bigrams are supported')
+        if self.ngram and not self.ngram >= 1: 
+            raise ValueError('at least unigram should be provided (ngram=1)')
         self.tokenizer = tokenizer 
         self.export_count_path = export_count_path
         self.export_prob_path = export_prob_path 
@@ -50,8 +50,10 @@ class Model:
             
             # form key, which is ngram tuple 
             key_ = [] 
-            for j in range(0, self.ngram):
-                key_.append(self.tokens[i+j])
+            for j in range(0, self.ngram):                 
+                if (i+j) > len(self.tokens) - 1: break 
+                token = self.tokens[i+j]
+                key_.append(token)
             key_ = tuple(key_)
 
             try:
