@@ -3,6 +3,7 @@
 # refac this class 
 import random  
 import pickle
+from typing import Self 
 from pathlib import Path 
 
 from tokenizer import BaseTokenizer
@@ -13,8 +14,8 @@ class Model:
         self, 
         ngram: int | None, 
         tokenizer: BaseTokenizer | None, 
-        export_count_path: Path = Path('out_count.pkl'), 
-        export_prob_path: Path = Path('out_prob.pkl'), 
+        export_count_path: Path | None = Path('out_count.pkl'), 
+        export_prob_path: Path | None = Path('out_prob.pkl'), 
     ): 
         self.ngram = ngram 
         if not (2 >= self.ngram >= 1): 
@@ -122,4 +123,22 @@ class Model:
             sampled.append(token)
         
         return sampled
+    
+    @classmethod
+    def from_pretrained(
+        cls, 
+        export_count_path: Path | None, 
+        export_prob_path: Path | None, 
+    ) -> Self: 
+        model = cls(
+            tokenizer=None, 
+            ngram=None, 
+            export_count_path=export_count_path,
+            export_prob_path=export_prob_path
+        ) 
+        
+        if export_count_path: model.load_count_dict()
+        if export_prob_path: model.load_prob_dict() 
+        
+        return model 
     
