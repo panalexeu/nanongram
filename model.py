@@ -106,7 +106,6 @@ class Model:
             prefix = key_[:-1]
             self.prob_dict[key_] = ngram_count / prefix_counts[prefix]             
 
-    # TODO handle out of range tokens 
     def sample(self, token: str | None) -> list[str]: 
         """unifrmly sample until END_SEQ token, start from START_SEQ token or provided token"""
         self.empty_prob_dict_check()
@@ -116,6 +115,8 @@ class Model:
         sampled = [token]
         while token.strip() != END_SEQ: 
             ngrams = [key_ for key_ in keys_ if key_[0] == token]
+            if len(ngrams) == 0:  # token was not found in prob_dict
+                return []
             probs = [self.prob_dict[ngram] for ngram in ngrams]
             # uniformly sample here from distr 
             sample = random.choices(population=ngrams, weights=probs, k=1)[0]
