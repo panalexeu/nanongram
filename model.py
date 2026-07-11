@@ -101,7 +101,7 @@ class Model:
 
     # TODO handle out of range tokens 
     def sample(self, token: str | None) -> list[str]: 
-        """unifrmly sample until END_SEQ token, start from START_SEQ token"""
+        """unifrmly sample until END_SEQ token, start from START_SEQ token or provided token"""
         self.empty_prob_dict_check()
 
         token = START_SEQ if not token else token 

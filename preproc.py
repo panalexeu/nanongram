@@ -51,10 +51,3 @@ class TgPreporcStrategy(BasePreprocStrategy):
                     msgs.append(text)
 
         return msgs 
-
-if __name__ == '__main__': 
-    path = './data/ChatExport_2026-06-20/result.json'
-    preproc = TgPreporcStrategy(
-        path,
-        id_=os.environ.get('USER_ID')
-    ).export()

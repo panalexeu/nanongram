@@ -17,10 +17,3 @@ class BaseTokenizer:
             text = text.lower() 
 
         return re.findall(self.pat, text)
-
-if __name__ == '__main__': 
-    tokenizer = BaseTokenizer()
-    with open('./out.txt', 'r') as f:
-        for line in f.readlines():
-            res = tokenizer(line)
-            breakpoint()
