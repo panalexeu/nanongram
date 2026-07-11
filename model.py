@@ -27,14 +27,20 @@ class Model:
         self.raw = None
         self.tokens = []
 
-    def load_raw(self, path: Path) -> list[str]: 
+    def load_raw(self, path: Path): 
         with open(path, 'r') as f: 
             self.raw = f.read()
     
-    def tokenize(self): 
-        self.tokens = self.tokenizer.__call__(text=self.raw, lower=True)
+    def tokenize(self, lower: bool = True): 
+        if not self.raw: 
+            raise IOError('no data was loaded, use load_raw() method')
+
+        self.tokens = self.tokenizer.__call__(text=self.raw, lower=lower)
 
     def count(self): 
+        if len(self.tokens) == 0: 
+            raise IOError('tokens list is empty, use tokenize() method')
+
         for i in range(0, len(self.tokens)): 
             token = self.tokens[i].strip()
 
