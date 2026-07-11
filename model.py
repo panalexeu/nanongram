@@ -1,6 +1,4 @@
 # TODO implement radix tree ds here, 
-# for now it is biased to bigram or fuck it 
-# refac this class 
 import random  
 import pickle
 from typing import Self 
