@@ -18,7 +18,7 @@ class Model:
         export_prob_path: Path | None = Path('out_prob.pkl'), 
     ): 
         self.ngram = ngram 
-        if not (2 >= self.ngram >= 1): 
+        if self.ngram and not (2 >= self.ngram >= 1): 
             raise ValueError('Only 1 - unigram and 2 - bigrams are supported')
         self.tokenizer = tokenizer 
         self.export_count_path = export_count_path
@@ -141,4 +141,3 @@ class Model:
         if export_prob_path: model.load_prob_dict() 
         
         return model 
-    
