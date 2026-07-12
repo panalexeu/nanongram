@@ -143,6 +143,30 @@ class Model:
         start_tokens = [key_ for key_ in keys_ if key_[0] == START_SEQ]
         return random.choice(start_tokens)
 
+    def top_ngram(self) -> tuple[tuple, int]:
+        self.empty_count_dict_check() 
+
+        count = 0 
+        top_ngram_ = None 
+        for key, val in self.count_dict.items():
+            if val >= count: 
+                top_ngram_ = key
+                count = val 
+        
+        return (top_ngram_, count)
+
+    def stats(self) -> dict: 
+        """
+        stats method, intended to be called after training 
+        """
+        self.empty_prob_dict_check() 
+
+        return {
+            'vocab_size': len(set(self.tokens)), 
+            'ngrams_size': len(self.prob_dict.keys()),
+            'top_ngram': self.top_ngram()
+        } 
+
     @classmethod
     def from_pretrained(
         cls, 
@@ -160,3 +184,5 @@ class Model:
         if export_prob_path: model.load_prob_dict() 
         
         return model 
+    
+    

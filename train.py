@@ -37,3 +37,6 @@ if __name__ == '__main__':
     model.count_prob()
     if args.export_count_path: model.export_count_dict() 
     model.export_prob_dict()    
+    
+    stats = model.stats() 
+    print(stats)
