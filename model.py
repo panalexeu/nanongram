@@ -94,11 +94,11 @@ class Model:
 
         keys_ = self.count_dict.keys()
         
-        # count prefixex 
+        # count prefixes 
         prefix_counts = dict() 
         for key_ in keys_:
             prefix = key_[:-1]
-            prefix_counts[prefix] = prefix_counts.get(prefix, 0) + 1 
+            prefix_counts[prefix] = prefix_counts.get(prefix, 0) + self.count_dict[key_]
 
         # calc prob by dividing count_dict[ngram] / prefix_counts[ngram-1]
         for key_ in keys_: 
@@ -186,3 +186,20 @@ class Model:
         return model 
     
     
+    def _check(self): 
+        """check that ngrams probabilities sum up to 1.0 approx."""
+        self.empty_prob_dict_check()
+
+        keys_ = self.prob_dict.keys()         
+        prefix_counts = dict() 
+        for key_ in keys_:
+            prefix = key_[:-1]
+
+            if not prefix_counts.get(prefix): 
+                prefix_counts[prefix] = True 
+                prob = 0 
+                for pkey in keys_: 
+                    if pkey[:-1] == prefix: prob += self.prob_dict[pkey]
+        
+                assert (prob >= 0.99 and prob <= 1.01), f"{prefix} got prob {prob}"
+                
