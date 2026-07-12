@@ -1,9 +1,9 @@
 import argparse 
 from pathlib import Path
 
-from preproc import TgPreporcStrategy
-from model import Model
-from tokenizer import BaseTokenizer
+from .preproc import TgPreporcStrategy
+from .model import Model
+from .tokenizer import BaseTokenizer
 
 if __name__ == '__main__': 
     parser = argparse.ArgumentParser(description="tg ingestion pipeline: cnv preprocessing -> ngram model training -> counts/probs export")

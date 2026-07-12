@@ -1,7 +1,6 @@
 import argparse
 
-from model import Model
-from tokenizer import BaseTokenizer
+from .model import Model
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='sample from pretrained ngram model')

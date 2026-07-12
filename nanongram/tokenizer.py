@@ -1,6 +1,6 @@
 import re 
 
-from preproc import START_SEQ, END_SEQ
+from .preproc import START_SEQ, END_SEQ
 
 class BaseTokenizer:
     """

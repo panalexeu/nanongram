@@ -4,8 +4,8 @@ import pickle
 from typing import Self 
 from pathlib import Path 
 
-from tokenizer import BaseTokenizer
-from preproc import END_SEQ, START_SEQ
+from .tokenizer import BaseTokenizer
+from .preproc import END_SEQ, START_SEQ
 
 class Model: 
     def __init__(

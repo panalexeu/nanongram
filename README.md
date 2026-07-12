@@ -10,10 +10,10 @@ preproc.py implements only a preprocessor to collect messages from a Telegram ch
 
 **train.py usage example:**
 ```bash
-python ./train.py <USER_ID> <TG_CNV_EXPORT_PATH> --preproc_export_path ./out.txt --ngram 2 --export_prob_path ./outprobs.pkl
+python -m nanongram.train <USER_ID> <TG_CNV_EXPORT_PATH> --preproc_export_path ./out.txt --ngram 2 --export_prob_path ./outprobs.pkl
 ```
 
 **sample.py usage example:**
 ```bash
-python ./sample.py ./outprobs.pkl
+python -m nanongram.sample ./outprobs.pkl
 ```
