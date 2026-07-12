@@ -120,7 +120,7 @@ class Model:
             assert len(tokens) == ngram-1 
 
         keys_ = self.prob_dict.keys()
-        sampled = tokens
+        sampled = tokens.copy()
         while tokens[-1].strip() != END_SEQ: 
             ngrams = [key_ for key_ in keys_ if ''.join(key_[:ngram-1]) == ''.join(tokens)]
             if len(ngrams) == 0:  # token was not found in prob_dict
